@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -7,12 +7,17 @@ public enum DotColor
     Red, Blue, Green, Yellow, Purple
 }
 
-public class Dot : MonoBehaviour, IPointerClickHandler
+
+public class Dot : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     public SpriteRenderer spriteRenderer;
     public DotColor color;
+    private bool isConnected = false;
+
 
     private int x, y;
+
+    public Vector2Int Position => new Vector2Int(x, y);
 
     public void Init(int x, int y, DotColor color)
     {
@@ -50,4 +55,49 @@ public class Dot : MonoBehaviour, IPointerClickHandler
             default: return Color.white;
         }
     }
+
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        DotConnector.Instance.BeginConnection(this);
+    }
+
+    public void OnDrag(PointerEventData eventData)
+    {
+        Vector2 worldPoint = Camera.main.ScreenToWorldPoint(eventData.position);
+        RaycastHit2D hit = Physics2D.Raycast(worldPoint, Vector2.zero);
+        if (hit.collider != null)
+        {
+            Dot other = hit.collider.GetComponent<Dot>();
+            if (other != null)
+            {
+                DotConnector.Instance.TryAddDot(other);
+            }
+        }
+    }
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        DotConnector.Instance.EndConnection();
+    }
+
+    public void PlayConnectAnimation()
+    {
+        isConnected = true;
+        transform.localScale = Vector3.one * 1.1f;
+    }
+
+    public void ResetScale()
+    {
+        if (!isConnected)
+        {
+            transform.localScale = Vector3.one;
+        }
+    }
+
+    public void ForceReset()
+    {
+        isConnected = false;
+        transform.localScale = Vector3.one;
+    }
+
 }
