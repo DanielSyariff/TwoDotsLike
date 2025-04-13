@@ -102,9 +102,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 6311181182813907905}
-  bombRenderer: {fileID: -1483665779731714255, guid: f22be97334770c347957ff64bf48c1ce, type: 3}
   color: 0
-  dotType: 0
 --- !u!58 &1183462902971710052
 CircleCollider2D:
   m_ObjectHideFlags: 0

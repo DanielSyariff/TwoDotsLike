@@ -89,14 +89,19 @@ public class DotConnector : MonoBehaviour
 
         while (elapsed < duration)
         {
+            if (dot == null) yield break; // STOP coroutine kalau dot sudah null / destroyed
             dot.transform.localScale = Vector3.Lerp(originalScale, targetScale, elapsed / duration);
             elapsed += Time.deltaTime;
             yield return null;
         }
 
-        dot.transform.localScale = targetScale;
-        Destroy(dot.gameObject);
+        if (dot != null)
+        {
+            dot.transform.localScale = targetScale;
+            Destroy(dot.gameObject); // Destroy hanya jika dot masih ada
+        }
     }
+
 
 
     private bool IsAdjacent(Dot a, Dot b)
